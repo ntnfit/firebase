@@ -1,6 +1,3 @@
-# app.py
-
-# Required imports
 import os
 from flask import Flask, request, jsonify
 from firebase_admin import credentials, firestore, initialize_app
@@ -12,7 +9,7 @@ app = Flask(__name__)
 cred = credentials.Certificate('key.json')
 default_app = initialize_app(cred)
 db = firestore.client()
-todo_ref = db.collection('todos')
+todo_ref = db.collection('nguyen')
 
 @app.route('/add', methods=['POST'])
 def create():
@@ -22,7 +19,7 @@ def create():
         e.g. json={'id': '1', 'title': 'Write a blog post'}
     """
     try:
-        id = request.json['id']
+        id = request.json['maso']
         todo_ref.document(id).set(request.json)
         return jsonify({"success": True}), 200
     except Exception as e:
@@ -37,7 +34,7 @@ def read():
     """
     try:
         # Check if ID was passed to URL query
-        todo_id = request.args.get('id')
+        todo_id = request.args.get('maso')
         if todo_id:
             todo = todo_ref.document(todo_id).get()
             return jsonify(todo.to_dict()), 200
@@ -55,7 +52,7 @@ def update():
         e.g. json={'id': '1', 'title': 'Write a blog post today'}
     """
     try:
-        id = request.json['id']
+        id = request.json['maso']
         todo_ref.document(id).update(request.json)
         return jsonify({"success": True}), 200
     except Exception as e:
@@ -68,11 +65,11 @@ def delete():
     """
     try:
         # Check for ID in URL query
-        todo_id = request.args.get('id')
+        todo_id = request.args.get('maso')
         todo_ref.document(todo_id).delete()
         return jsonify({"success": True}), 200
     except Exception as e:
         return f"An Error Occured: {e}"
-@app.route('/')
-def hello():
- return "<h1>Welcome to Geeks for Geeks</h1>"
+
+if __name__=='__main__':
+    app.run(threaded=True, port=5000)
